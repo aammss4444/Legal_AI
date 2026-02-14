@@ -18,10 +18,14 @@ def get_rag_chain():
     vectorstore = Chroma(persist_directory="chroma_db", embedding_function=embeddings)
 
     # Initialize Gemini Chat Model
-    llm = ChatGoogleGenerativeAI(model="gemini-pro", google_api_key=GOOGLE_API_KEY, convert_system_message_to_human=True)
+    llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", google_api_key=GOOGLE_API_KEY, convert_system_message_to_human=True)
 
     # Define Prompt Template
-    template = """Use the following pieces of context to answer the question at the end. 
+    template = """You are an AI legal assistant.
+    
+    IMPORTANT DISCLAIMER: This is only AI legal advice for emergency purposes. In serious situations, you must contact a qualified lawyer for better support and justice.
+    
+    Use the following pieces of context to answer the question at the end. 
     If you don't know the answer, just say that you don't know, don't try to make up an answer. 
     Keep the answer concise and helpful.
     

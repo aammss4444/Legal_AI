@@ -10,5 +10,5 @@ if not GOOGLE_API_KEY:
 else:
     genai.configure(api_key=GOOGLE_API_KEY)
     for m in genai.list_models():
-        if 'embed' in m.name:
+        if 'generateContent' in m.supported_generation_methods:
             print(m.name)
