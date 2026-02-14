@@ -7,7 +7,7 @@ import google.generativeai as genai
 # Load environment variables
 load_dotenv()
 
-app = FastAPI(title="Legal Decision Bot API", version="1.0.0")
+app = FastAPI(title="Legal Decision", version="1.0.0")
 
 # Configure Google Gemini
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
@@ -30,10 +30,26 @@ async def chat_endpoint(request: QueryRequest):
         raise HTTPException(status_code=500, detail="Google API Key not configured")
     
     try:
-        model = genai.GenerativeModel('gemini-pro')
-        response = model.generate_content(request.query)
-        return {"response": response.text}
+        # Import here to avoid circular dependencies or initialization issues
+        from rag_chain import get_qa_chain
+        
+        qa_chain = get_qa_chain()
+        result = qa_chain.invoke(request.query)
+        
+        # Extract the answer and source documents
+        answer = result.get('result', "No answer found.")
+        source_docs = result.get('source_documents', [])
+        
+        sources = []
+        for doc in source_docs:
+            sources.append(doc.metadata.get('source', 'Unknown'))
+            
+        return {
+            "response": answer,
+            "sources": list(set(sources)) # Unique sources
+        }
     except Exception as e:
+        print(f"Error processing request: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
