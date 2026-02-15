@@ -1,6 +1,8 @@
 venv/
+venv2/
 __pycache__/
 *.pyc
+# Environment Variables
 .env
 chroma_db/
 node_modules/
