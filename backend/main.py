@@ -7,7 +7,17 @@ import google.generativeai as genai
 # Load environment variables
 load_dotenv()
 
-app = FastAPI(title="Legal Decision", version="1.0.0")
+app = FastAPI(title="Legal Decision Bot API", version="1.0.0")
+
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], # Allow all origins for development
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Configure Google Gemini
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
@@ -31,9 +41,9 @@ async def chat_endpoint(request: QueryRequest):
     
     try:
         # Import here to avoid circular dependencies or initialization issues
-        from rag_chain import get_qa_chain
+        from rag_chain import get_rag_chain
         
-        qa_chain = get_qa_chain()
+        qa_chain = get_rag_chain()
         result = qa_chain.invoke(request.query)
         
         # Extract the answer and source documents

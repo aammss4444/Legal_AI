@@ -3,4 +3,6 @@ __pycache__/
 *.pyc
 .env
 chroma_db/
-backend/chroma_db/
+node_modules/
+dist/
+.DS_Store
